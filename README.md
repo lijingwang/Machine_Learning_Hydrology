@@ -10,18 +10,60 @@ Co-authored with Claude ;)
 
 ## Notebooks
 
+### Tabular & Time-Series (CAMELS dataset — 671 US catchments)
+
 | # | Notebook | Topic | Key concepts |
 |---|----------|-------|--------------|
 | 00 | [00_MLP.ipynb](00_MLP.ipynb) | Multilayer Perceptron | Feedforward networks, backpropagation, R², RMSE |
 | 01 | [01_SHAP.ipynb](01_SHAP.ipynb) | Explainability & SHAP | Shapley values, beeswarm, dependence plots, spatial maps |
 | 02 | [02_LSTM_dynamic_inputs.ipynb](02_LSTM_dynamic_inputs.ipynb) | LSTM — single catchment | Sequence modeling, NSE, chronological split, persistence baseline |
-| 03 | [03_LSTM_static_dynamic_inputs.ipynb](03_LSTM_static_dynamic_inputs.ipynb) | EA-LSTM — all catchments | Entity-Aware LSTM, static + dynamic inputs, multi-catchment training ⚠️ training is slow — requires GPU (use Colab with GPU runtime or a local GPU machine) |
+| 03 | [03_LSTM_static_dynamic_inputs.ipynb](03_LSTM_static_dynamic_inputs.ipynb) | EA-LSTM — all catchments | Entity-Aware LSTM, static + dynamic inputs, multi-catchment training ⚠️ training is slow — requires GPU |
 
-All notebooks use the **CAMELS** dataset (671 US catchments) and progress from static tabular prediction to daily time-series modeling.
+### Image-Based Streamflow (Fenton River trail-camera photos)
+
+| # | Notebook | Topic | Key concepts |
+|---|----------|-------|--------------|
+| 04 | [04_image_simple_cnn.ipynb](04_image_simple_cnn.ipynb) | Dataset exploration + Simple CNN | log-transform regression target, conv blocks, Grad-CAM++ |
+| 05 | [05_image_resnet18.ipynb](05_image_resnet18.ipynb) | Pretrained ResNet-18 | Transfer learning, ImageNet normalisation, fine-tuning, Grad-CAM++ |
 
 ---
 
 ## Data
+
+### Fenton River trail-camera photos — required for notebooks 04 & 05
+
+989 daily noon photos (2020–2025) from a CTDEEP trail camera at USGS gauge 01121330 (Fenton River at Mansfield, CT), paired with USGS discharge measurements.
+
+**Step 1 — Download from HuskyCT**
+Download `Fenton_River_Trail_Camera_Daily_Photos.zip` from the course HuskyCT page. Do **not** unzip it yet.
+
+**Step 2 — Upload to Google Drive**
+Upload the zip file directly into `My Drive` (not inside any subfolder).
+
+**Step 3 — Unzip in Colab**
+Run this once at the start of your session:
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+
+import zipfile, pathlib
+zip_path  = pathlib.Path('/content/drive/MyDrive/Fenton_River_Trail_Camera_Daily_Photos.zip')
+dest_path = pathlib.Path('/content/drive/MyDrive/Fenton_River_Trail_Camera_Daily_Photos')
+if not dest_path.exists():
+    print('Unzipping ...')
+    with zipfile.ZipFile(zip_path) as z:
+        z.extractall('/content/drive/MyDrive/')
+    print('Done.')
+```
+
+**Step 4 — Set the path in the notebook**
+```python
+DATASET_DIR = Path('/content/drive/MyDrive/Fenton_River_Trail_Camera_Daily_Photos')
+```
+
+The unzip step only runs once — subsequent sessions skip it if the folder already exists.
+
+---
 
 ### CAMELS — automatically downloaded
 
@@ -86,6 +128,12 @@ Clone the repo and set `MAURER_DIR` in the setup cell to your local path.
 ---
 
 ## References
+
+### Image-Based Streamflow
+
+- Goodling, P. J., Fair, J. H., Gupta, A., Walker, J. D., Dubreuil, T., Hayden, M., and Letcher, B. H. (2025). Technical note: A low-cost approach to monitoring relative streamflow dynamics in small headwater streams using time lapse imagery and a deep learning model. *Hydrology and Earth System Sciences*, 29, 6445–6460. https://doi.org/10.5194/hess-29-6445-2025
+
+### Tabular & Time-Series
 
 - Newman, A., et al. (2015). Development of a large-sample watershed-scale hydrometeorological dataset for the contiguous USA. *HESS*, 19, 209–223.
 - Addor, N., et al. (2017). The CAMELS data set: catchment attributes and meteorology for large-sample studies. *HESS*, 21, 5293–5313.
